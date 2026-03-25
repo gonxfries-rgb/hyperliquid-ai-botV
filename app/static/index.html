@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hyperliquid AI Bot</title>
+    <style>
+      body {
+        font-family: Inter, Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: #0b1020;
+        color: #eef2ff;
+      }
+      header {
+        padding: 20px 24px;
+        border-bottom: 1px solid #23314d;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      main {
+        padding: 24px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 16px;
+      }
+      .card {
+        background: #121a31;
+        border: 1px solid #23314d;
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+      h1, h2, h3 {
+        margin-top: 0;
+      }
+      button {
+        padding: 10px 14px;
+        margin: 4px 6px 4px 0;
+        border: 0;
+        border-radius: 10px;
+        background: #4f46e5;
+        color: white;
+        cursor: pointer;
+      }
+      button.warn { background: #dc2626; }
+      button.alt { background: #334155; }
+      input, select {
+        width: 100%;
+        padding: 10px;
+        margin: 6px 0 12px;
+        border-radius: 10px;
+        border: 1px solid #334155;
+        background: #0f172a;
+        color: white;
+        box-sizing: border-box;
+      }
+      pre {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        background: #0f172a;
+        border-radius: 12px;
+        padding: 12px;
+        max-height: 360px;
+        overflow: auto;
+      }
+      .pill {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #1e293b;
+        margin-right: 8px;
+        margin-bottom: 8px;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .small { opacity: 0.8; font-size: 14px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div>
+        <h1>Hyperliquid AI Bot</h1>
+        <div class="small">Compatibility-first starter: status, controls, journaling, and a future AI decision hook.</div>
+      </div>
+      <div>
+        <label class="small" for="token">Bearer token</label>
+        <input id="token" placeholder="Optional API token" />
+      </div>
+    </header>
+
+    <main>
+      <section class="card">
+        <h2>Status</h2>
+        <div id="status-pills"></div>
+        <pre id="status-json">Loading...</pre>
+        <button onclick="postAction('/api/control/start')">Start loop</button>
+        <button class="alt" onclick="postAction('/api/control/stop')">Stop loop</button>
+        <button class="warn" onclick="postAction('/api/control/panic/true')">Enable panic</button>
+        <button class="alt" onclick="postAction('/api/control/panic/false')">Disable panic</button>
+        <button class="warn" onclick="postAction('/api/control/cancel-all')">Cancel all</button>
+      </section>
+
+      <section class="card">
+        <h2>Manual test order</h2>
+        <div class="row">
+          <div>
+            <label>Symbol</label>
+            <input id="symbol" value="ETH" />
+          </div>
+          <div>
+            <label>Side</label>
+            <select id="side">
+              <option value="buy">Buy</option>
+              <option value="sell">Sell</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label>Size</label>
+            <input id="size" value="0.01" />
+          </div>
+          <div>
+            <label>Order type</label>
+            <select id="order-type">
+              <option value="market">Market</option>
+              <option value="limit">Limit</option>
+            </select>
+          </div>
+        </div>
+        <label>Limit price (for limit orders)</label>
+        <input id="limit-price" placeholder="e.g. 2500" />
+        <button onclick="submitTestOrder()">Submit test order</button>
+        <button class="warn" onclick="flattenSymbol()">Flatten symbol</button>
+        <pre id="control-response">No action yet.</pre>
+      </section>
+
+      <section class="card">
+        <h2>Recent events</h2>
+        <pre id="events-json">Loading...</pre>
+      </section>
+
+      <section class="card">
+        <h2>Recent orders</h2>
+        <pre id="orders-json">Loading...</pre>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
